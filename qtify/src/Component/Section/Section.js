@@ -12,18 +12,13 @@ const Section = ({ title, newData, type, genres }) => {
 
   useEffect(() => {
     handlefilterSongs();
-  },[newData]);
-
-  useEffect(() => {
-    handlefilterSongs();
-  },[isSelect]);
+  }, [newData, isSelect]); 
 
   const handleToggle = () => {
     setCauroselToggle(!carouselToggle);
   };
 
   const handlefilterSongs = () => {
-   console.log(type)
     if (type === "song") {
       if (isSelect === "all") {
         setFilteredSongsData(newData);
@@ -44,24 +39,23 @@ const Section = ({ title, newData, type, genres }) => {
   };
 
   return (
-    
-  <div className={`${type === "song" ? styles.songsBorder : ""}`}>
+    <div className={`${type === "song" ? styles.songsBorder : ""}`}>
       <div className={styles.header}>
         <h3>{title}</h3>
-
-        <h4 className={styles.toggleText} onClick={handleToggle}>
-          {!carouselToggle ? "Collapse" : "Show All"}
-        </h4>
+        {type === "song" ? null : (
+          <h4 className={styles.toggleText} onClick={handleToggle}>
+            {!carouselToggle ? "Collapse" : "Show All"}
+          </h4>
+        )}
       </div>
       {type === "song" ? (
         <div className={styles.genres}>
           {genres.map((genre) => (
-            <div className={styles.genreNameSection}>
+            <div className={styles.genreNameSection} key={genre.key}>
               <h5
-                className={`${styles.genreName}  ${
+                className={`${styles.genreName} ${
                   isSelect === genre.key ? styles.selectedGenre : ""
                 }`}
-                key={genre.key}
                 onClick={() => selectGenre(genre.key)}
               >
                 {genre.label}
@@ -79,10 +73,8 @@ const Section = ({ title, newData, type, genres }) => {
         <div className={styles.cardsWrapper}>
           {!carouselToggle ? (
             <div className={styles.wrapper}>
-              {filteredSongsData.map((item,idx) => (
-                <Card
-                key={idx}
-                  data={item} type={type} genres={genres} />
+              {filteredSongsData.map((item, idx) => (
+                <Card key={idx} data={item} type={type} genres={genres} />
               ))}
             </div>
           ) : (
@@ -90,16 +82,19 @@ const Section = ({ title, newData, type, genres }) => {
               data={filteredSongsData}
               renderedComponent={(filteredSongsData) => (
                 <Card 
-                key={filteredSongsData.id}
-                data={filteredSongsData} type={type} genres={genres} />
+                  key={filteredSongsData.id}
+                  data={filteredSongsData}
+                  type={type}
+                  genres={genres}
+                />
               )}
             />
           )}
         </div>
       )}
     </div>
- 
-    
   );
 };
+
 export default Section;
+
